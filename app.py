@@ -59,6 +59,13 @@ loc_df["relative_sum"] = loc_df["gesamt"] / loc_df.index.map(einwohnerzahlen)
 # Streamlit-UI
 st.title("Verbrechen in Berliner Stadtteilen")
 
+loc_df.loc['all'] = df.sum(numeric_only=True)
+all_values = loc_df.loc['all'].dropna()
+
+fig = px.pie(names=all_values.index, values=all_values.values, title='Verteilung der Delikte in Berlin')
+st.plotly_chart(fig)
+
+
 # Checkbox für relative Werte
 show_relative = st.checkbox("Relative Verbrechen pro Einwohner anzeigen")
 
@@ -95,9 +102,11 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 
-loc_df.loc['all'] = df.sum(numeric_only=True)
-all_values = loc_df.loc['all'].dropna()
+fig = px.bar(loc_df.iloc[0:12], 
+             x=loc_df.iloc[0:12].index,
+             y=["gewaltverbrechen", "verkehrsdelikte", "diebstahl"],
+             title="Verteilung der Straftaten nach Standort",
+             labels={"value": "Anzahl der Straftaten", "location": "Ort"}
+             )
 
-fig = px.pie(names=all_values.index, values=all_values.values, title='Verteilung der Delikte in Berlin')
 st.plotly_chart(fig)
-
