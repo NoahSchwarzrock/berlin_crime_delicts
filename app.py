@@ -109,4 +109,32 @@ fig = px.bar(loc_df.iloc[0:12],
              labels={"value": "Anzahl der Straftaten", "location": "Ort"}
              )
 
+fig.update_layout(xaxis_title='Stadtteil')
+
+st.plotly_chart(fig)
+
+
+df['date'] = pd.to_datetime(df['date'])
+df["jahr"] = df["date"].dt.year
+df_year = df.groupby(by=['location', "jahr"], as_index=False).agg(verkehrsdelikte=('verkehrsdelikte', 'sum'),
+                                       vandalismus=('vandalismus', 'sum'),
+                                       sexualdelikte=('sexualdelikte', 'sum'),
+                                       drogen=('drogen', 'sum'),
+                                       betrug=('betrug', 'sum'),
+                                       diebstahl=('diebstahl', 'sum'),
+                                       hasskriminalität=('hasskriminalität', 'sum'),
+                                       gewaltverbrechen=('gewaltverbrechen', 'sum'),
+                                       sonstige=('sonstige', 'sum')
+                                       )
+ 
+mitte_df_year = df_year[df_year["location"] == "Mitte"]
+ 
+fig = px.bar(mitte_df_year,
+             x="jahr",
+             y=["verkehrsdelikte", "vandalismus", "diebstahl", "hasskriminalität", "gewaltverbrechen"],
+             title="Verteilung der Straftaten im Bezirk Mitte",
+             labels={"value": "Anzahl der Straftaten", "jahr": "Jahre"},
+             barmode="group"
+             )
+ 
 st.plotly_chart(fig)
